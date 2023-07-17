@@ -1,18 +1,20 @@
-import { useState } from "react";
 import "./App.css";
 import { Movies } from "./components/Movies";
-import { searchMovies } from "./services/movies";
+import { useSearch } from "./hooks/useSearch";
+import { useMovies } from "./hooks/useMovies";
 
 function App() {
+  const { search, updateSearch } = useSearch();
+  const { movies, getMovies, loading } = useMovies({ search });
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    searchMovies(event.target.value);
+    getMovies({ search });
   };
 
   const handleChange = (event) => {
     const newSearch = event.target.value;
-    setSearch(newSearch);
+    updateSearch(newSearch);
   };
 
   return (
@@ -30,9 +32,7 @@ function App() {
         </form>
       </header>
 
-      <main>
-        <Movies movies={movies} />
-      </main>
+      <main>{loading ? <p>Loading...</p> : <Movies movies={movies} />}</main>
     </div>
   );
 }
